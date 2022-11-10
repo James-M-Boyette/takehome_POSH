@@ -1,0 +1,99 @@
+@import '@globals';
+
+@import url('https://fonts.googleapis.com/css?family=Roboto:100,200,300,400,500,700,800,900');
+@import url('https://fonts.googleapis.com/css?family=Nunito:100,200,300,400,500,600,700,800');
+@import url('https://fonts.googleapis.com/css?family=Dela+Gothic+One:100,200,300,400,500,600,700,800');
+@font-face {
+  font-family: Folsom;
+  src: url(https://poshtesting.s3.amazonaws.com/folsom-black-web.ttf);
+}
+@font-face {
+  font-family: Bebas Neue;
+  src: url("https://posh-b2.s3.us-east-2.amazonaws.com/BebasNeue-Bold.otf")
+}
+@font-face {
+  font-family: Newake;
+  src: url("https://posh-b2.s3.us-east-2.amazonaws.com/Newake-Font-Regular.otf")
+}
+@font-face {
+  font-family: Circular Std;
+  src: url("https://posh-b2.s3.us-east-2.amazonaws.com/CircularStd/CircularStd-Book.otf");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: Circular Std;
+  src: url("https://posh-b2.s3.us-east-2.amazonaws.com/CircularStd/CircularStd-BookItalic.otf");
+  font-weight: 400;
+  font-style: italic;
+}
+@font-face {
+  font-family: Circular Std;
+  src: url("https://posh-b2.s3.us-east-2.amazonaws.com/CircularStd/CircularStd-Medium.otf");
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: Circular Std;
+  src: url("https://posh-b2.s3.us-east-2.amazonaws.com/CircularStd/CircularStd-MediumItalic.otf");
+  font-weight: 600;
+  font-style: italic;
+}
+@font-face {
+  font-family: Circular Std;
+  src: url("https://posh-b2.s3.us-east-2.amazonaws.com/CircularStd/CircularStd-Bold.otf");
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: Circular Std;
+  src: url("https://posh-b2.s3.us-east-2.amazonaws.com/CircularStd/CircularStd-BoldItalic.otf");
+  font-weight: 700;
+  font-style: italic;
+}
+@font-face {
+  font-family: Circular Std;
+  src: url("https://posh-b2.s3.us-east-2.amazonaws.com/CircularStd/CircularStd-Black.otf");
+  font-weight: 900;
+  font-style: normal;
+}
+@font-face {
+  font-family: Circular Std;
+  src: url("https://posh-b2.s3.us-east-2.amazonaws.com/CircularStd/CircularStd-BlackItalic.otf");
+  font-weight: 900;
+  font-style: italic;
+}
+
+$sans-serif: 'Roboto', helvetica, verdana, sans-serif;
+$nunito: 'Nunito', helvetica, verdana, nunito;
+$delta-gothic-one: 'Folsom', helvetica, verdana, delta-gothic-one;
+$folsom: 'Folsom', arial;
+
+*, :after, :before {
+  box-sizing: border-box !important;
+}
+
+html, body {
+  margin: 0;
+  font-family: $nunito;
+  max-width: 100%;
+  overflow-x: hidden;
+  background: $background-black;
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  background: #0c0d0f;
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2a2b2d;
+  border: 1px solid #4a4b4d;
+  border-radius: 4px;
+  opacity: .8;
+
+  &:hover {
+    background: #4a4b4d;
+  }
+}
