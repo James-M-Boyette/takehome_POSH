@@ -6,8 +6,9 @@ import './assets/stylesheets/styles.scss'
 
 import IFrames from './components/IFrames'
 import NavBar from './components/NavBar'
-import Explore from './pages/Explore'
-import Home from './pages/Home'
+import SelectCity from './pages/SelectCity'
+// import Home from './pages/Home'
+import ExploreEvents from './pages/ExploreEvents'
 
 const App = () => {
   // * SCRIPTS
@@ -20,7 +21,8 @@ const App = () => {
         <div className='posh-pages'>
           <Routes>
             <Route path='/' element={<Navigate replace to='/explore' />} />
-            <Route path='/explore' element={<Explore />} />
+            <Route path='/explore' element={<SelectCity />} />
+            <Route path='/events' element={<ExploreEvents />} />
           </Routes>
         </div>
       </BrowserRouter>

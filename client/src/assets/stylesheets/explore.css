@@ -1,0 +1,103 @@
+/* "Explore" stylings */
+
+/* City Selector Container */
+.city-selector {
+  background: #000;
+  height: 100vh;
+  width: 100vw;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* All <divs> in container */
+.city-selector > div.flex-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: scale(1.3);
+  gap: 40px;
+  max-width: 450px;
+  width: 100%;
+}
+
+/* City Selection Header */
+.city-selector-prompt {
+  color: var(--pirmary-posh);
+  text-transform: uppercase;
+  font-family: Circular Std;
+  font-weight: 200;
+  font-size: 16px;
+  white-space: nowrap;
+  text-align: center;
+  animation: fadeInDownB 2s forwards;
+}
+
+/* Cit Selection */
+.city-selector-cities {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.city-selector-cities > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 70px;
+  border: 1px solid var(--secondary-posh);
+  box-shadow: 0 0 10px -2px var(--secondary-posh), 0px 0px 10px var(--secondary-posh) inset;
+  border-radius: 10px;
+  text-transform: uppercase;
+  color: var(--secondary-posh);
+  font-family: Nunito;
+  font-weight: 500;
+  letter-spacing: 3px;
+  font-size: 14px;
+  cursor: pointer;
+  /* transition: 0.2s; */
+  /* animation: fadeInRightB 2s forwards ease-out; */
+  /* animation: fadeInRightB 2s; */
+  /* opacity: 0; */
+  /* transition: opacity 5s; */
+  /* transform: translateY(200px); */
+  animation-name: fadeInRightB;
+  animation-duration: 2s;
+  animation-delay: 0.5s;
+  animation-timing-function: ease-out;
+}
+
+@keyframes fadeInRightB {
+  0% {
+    opacity: 0;
+    transform: translateY(200px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
+.city-selector-cities > div:hover {
+  /* box-shadow: 0 0 11px rgba(33,33,33,.2);  */
+  box-shadow: 5 10 18px var(--pirmary-dark-posh);
+}
+
+.city-selector-cities > div.gold {
+  color: var(--pirmary-posh);
+  border: 1px solid var(--pirmary-posh);
+  box-shadow: 0 0 10px -2px var(--pirmary-posh), 0px 0px 10px var(--pirmary-posh) inset;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 768px) {
+  .city-selector > div.flex-container {
+    transform: scale(1);
+  }
+}

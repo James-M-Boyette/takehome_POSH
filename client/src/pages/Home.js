@@ -10,12 +10,12 @@ import React from 'react'
 // import WorkoutDetails from '../components/WorkoutDetails.js'
 // import WorkoutForm from '../components/WorkoutForm.js'
 
-const canvasStyle = {
-  zIndex: '2',
-  position: 'absolute',
-  pointerEvents: 'none',
-  inset: '0px',
-}
+// const canvasStyle = {
+//   zIndex: '2',
+//   position: 'absolute',
+//   pointerEvents: 'none',
+//   inset: '0px',
+// }
 
 const Home = () => {
   // * SCRIPTS

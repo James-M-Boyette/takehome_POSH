@@ -9,7 +9,7 @@ const canvasStyle = {
   inset: '0px',
 }
 
-const Explore = props => {
+const SelectCity = props => {
   // * SCRIPTS
   // useConfetti()
 
@@ -42,4 +42,4 @@ const Explore = props => {
   )
 }
 
-export default Explore
+export default SelectCity
