@@ -15,20 +15,9 @@ const ExploreEvents = props => {
   // * SCRIPTS
   // Display "Events"
   const [events, setEvents] = useState(null)
-  const {state} = useLocation()
-  // const {c, t, p, city} = state
 
   useEffect(() => {
     const fetchEvents = async () => {
-      // Fetch our data
-      /**
-      *   const response = await fetch("http://localhost:4043/api/workouts");
-      
-      *   Note: the above will cause a CORS error. One option is to install the 'CORS' package in our backend. The other, easier way is to
-            1. Add `"proxy": "http://localhost:4000",` to our FE's package.json &
-            2. remove the host+port portion of this url ...
-          Now, we can use the shortened fetch url below without issue:
-      */
       const response = await fetch('/api/events')
 
       // Parse the json
@@ -36,8 +25,7 @@ const ExploreEvents = props => {
 
       if (response.ok) {
         console.log('Events came back:', json)
-        setEvents(json) // only needed for the pre-Video #11 `useState()` hook
-        // dispatch({ type: "SET_WORKOUTS", payload: json }); // Video #11 - our 'WorkoutContext' context has logic that, when passed this "action" object ('type' and 'payload'), will update our 'workouts' object above (using the `useWorkoutsContext()` hook to execute a 'reducer()' switch ... o.O)
+        setEvents(json)
       } else {
         console.log('Something went wrong with data fetch ...')
       }
@@ -49,27 +37,65 @@ const ExploreEvents = props => {
   // "Back" arrow/button Navigation
   const navigate = useNavigate()
 
+  /**
+   * ! PARAMS
+   */
+
+  // Set the clicked button to 'selected'
+  const updateButton = e => {
+    const eventButtons = Array.from(document.getElementsByClassName('event-select'))
+    eventButtons.forEach(x => x.classList.remove('selected'))
+
+    e.currentTarget.classList.add('selected')
+  }
+
+  // TODO Params
+  // const {state} = useLocation()
+  // const {c, t, p, city} = state
+  let params = new URL(document.location).searchParams
+
   // Search Params
   const [searchParams, setSearchParams] = useSearchParams()
+
+  let newParams = new URLSearchParams(searchParams.toString())
 
   const c = searchParams.get('c')
   const t = searchParams.get('t')
   const p = searchParams.get('p')
   const city = searchParams.get('city')
 
-  // 'Selected' "Event" Button
-  const selectCategory = e => {
-    // Update Button Class/Styling
-    const eventButtons = Array.from(document.getElementsByClassName('event-select'))
-    eventButtons.forEach(x => x.classList.remove('selected'))
+  // Handle User Time-Range Selection
+  const selectTimeRange = e => {
+    // Style Button
+    updateButton(e)
 
-    e.currentTarget.classList.add('selected')
+    // Store Params
+    const params = {}
 
     // Update Params
+    // TODO: convert `e.currentTarget.id` to a passed argument of the same string, and remove each button's ID
+    e.currentTarget.id == 'this-week' ? newParams.set('t', 'week') : ''
+    e.currentTarget.id == 'today' ? newParams.set('t', 'today') : ''
+    e.currentTarget.id == 'thanksgiving' ? newParams.set('t', 'thanksgiving') : ''
+    // e.currentTarget.id == 'this-week' ? params.t = 'week' : ''
+    // e.currentTarget.id == 'today' ? params.t = 'today' : ''
+    // e.currentTarget.id == 'thanksgiving' ? params.t = 'thanksgiving' : ''
+
+    // Update 'searchParams'
+    setSearchParams(newParams.toString())
+    // setSearchParams(params)
+
     // router.push(`/reports/parcel?` + new URLSearchParams({id: currentId}))
-    e.currentTarget.id == 'this-week' ? setSearchParams({c: 'popular', t: 'week', p: '1', city: 'nyc'}) : ''
+    // e.currentTarget.id == 'this-week' ? (params.t = 'week') : ''
+    // e.currentTarget.id == 'this-week' ? searchParams.set('t', 'week') : ''
+    e.currentTarget.id == 'this-week' ? searchParams.set('t', 'week') : ''
     e.currentTarget.id == 'today' ? setSearchParams({c: 'popular', t: 'today', p: '1', city: 'nyc'}) : ''
     e.currentTarget.id == 'thanksgiving' ? setSearchParams({c: 'popular', t: 'thanksgiving', p: '1', city: 'nyc'}) : ''
+
+    // console.log('state:', state)
+    console.log('Params:', params)
+    console.log('searchParams', searchParams)
+    console.log('searchParams to string:', searchParams.toString())
   }
 
   // Temporary console log
@@ -111,13 +137,13 @@ const ExploreEvents = props => {
             <div className='explore-body-main-nav'>
               <div className='explore-body-main-nav-right'>
                 {/* <div id="this-week-button" className='selected' onClick={thisWeek}> */}
-                <div id='this-week' className='event-select selected' onClick={selectCategory}>
+                <div id='this-week' className='event-select selected' onClick={selectTimeRange}>
                   This Week
                 </div>
-                <div id='today' className='event-select' onClick={selectCategory}>
+                <div id='today' className='event-select' onClick={selectTimeRange}>
                   Today
                 </div>
-                <div id='thanksgiving' className='event-select' onClick={selectCategory}>
+                <div id='thanksgiving' className='event-select' onClick={selectTimeRange}>
                   🦃 Thanksgiving
                 </div>
               </div>
