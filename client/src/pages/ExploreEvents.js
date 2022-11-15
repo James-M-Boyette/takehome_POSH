@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {useNavigate, useSearchParams, useLocation} from 'react-router-dom'
+import {useLocation, useNavigate, useSearchParams} from 'react-router-dom'
 
 // components
 import EventDetails from '../components/EventDetails.js'
@@ -15,31 +15,31 @@ const ExploreEvents = props => {
   // * SCRIPTS
   // const {state} = useLocation()
 
-  // Display "Events"
-  const [events, setEvents] = useState(null)
+  // Fetch "Events"
+  const [poshEvents, setPoshEvents] = useState(null)
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      const response = await fetch('/api/events')
+    const fetchPoshEvents = async () => {
+      const response = await fetch('http://localhost:4042/api/events').then(console.log('Fetch Finished 🦼'))
 
       // Parse the json
       const json = await response.json()
 
       if (response.ok) {
         console.log('Events came back:', json)
-        setEvents(json)
+        setPoshEvents(json)
       } else {
         console.log('Something went wrong with data fetch ...')
       }
     }
 
-    fetchEvents()
+    fetchPoshEvents()
   }, [])
 
   // "Back" arrow/button Navigation
   const navigate = useNavigate()
 
-  // Style 'selected' Button
+  // Style Nav Button
   const updateButton = e => {
     const eventButtons = Array.from(document.getElementsByClassName('event-select'))
     eventButtons.forEach(x => x.classList.remove('selected'))
@@ -65,6 +65,7 @@ const ExploreEvents = props => {
     // Update 'searchParams'
     setSearchParams(newParams.toString())
 
+    // TODO DeleteMe
     console.log('searchParams', searchParams)
     console.log('searchParams to string:', searchParams.toString())
   }
@@ -92,7 +93,6 @@ const ExploreEvents = props => {
           <div className='explore-body-main'>
             <div className='explore-body-main-nav'>
               <div className='explore-body-main-nav-right'>
-                {/* <div id="this-week-button" className='selected' onClick={thisWeek}> */}
                 <div className='event-select selected' onClick={e => selectTimeRange(e, 'this-week')}>
                   This Week
                 </div>
@@ -105,7 +105,11 @@ const ExploreEvents = props => {
               </div>
             </div>
             <div className='explore-body-main-results event-card-grid'>
-              <div className='events'>{events && events.map(event => <p key={event._id}>{event.name}</p>)}</div>
+              {/* <div className='events'>{events && events.map(event => <p key={event._id}>{event.name}</p>)}</div> */}
+              {/* <div className='events'> */}
+              {poshEvents && poshEvents.map(poshEvent => <EventDetails key={poshEvent._id} poshEvent={poshEvent} />)}
+              {/* </div> */}
+              {/* <div className='no-events'>{!events && <h1>No Events Right Now ...</h1>}</div> */}
             </div>
           </div>
         </div>
