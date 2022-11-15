@@ -6,9 +6,9 @@ import './assets/stylesheets/styles.scss'
 
 import IFrames from './components/IFrames'
 import NavBar from './components/NavBar'
-import SelectCity from './pages/SelectCity'
 // import Home from './pages/Home'
 import ExploreEvents from './pages/ExploreEvents'
+import SelectCity from './pages/SelectCity'
 
 const App = () => {
   // * SCRIPTS
