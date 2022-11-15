@@ -11,11 +11,14 @@ const EventDetails = ({poshEvent}) => {
   }
   let eventDay = getDOTW()
 
-  console.log('id:', poshEvent._id)
+  // Event URL
+  const RedirectPage = () => {
+    window.location.replace(`https://posh.vip/e/${poshEvent.url}?t=posh`)
+  }
 
   // * TEMPLATE
   return (
-    <div className='event-card' style={{backgroundImage: `url(${poshEvent.flyer})`}}>
+    <div className='event-card' style={{backgroundImage: `url(${poshEvent.flyer})`}} onClick={RedirectPage}>
       <div className='event-card-filter'></div>
       <div className='event-card-info'>
         <div className='event-card-date'>
@@ -25,8 +28,8 @@ const EventDetails = ({poshEvent}) => {
           <div className='event-card-name'>{poshEvent.name}</div>
           <div className='event-card-location'>{poshEvent.venueName}</div>
         </div>
-        <img src='' alt='' />
       </div>
+      <img className='event-card-organizer' src={poshEvent.groupAvi} alt='' />
     </div>
   )
 }

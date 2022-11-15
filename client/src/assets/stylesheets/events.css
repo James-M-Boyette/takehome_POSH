@@ -132,6 +132,10 @@ video {
   background: linear-gradient(rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.8666666667) 90%, #000 100%);
 }
 
+.event-card:hover {
+  transform: scale(1.05);
+}
+
 .event-card-info {
   display: flex;
   width: 100%;
@@ -210,7 +214,16 @@ video {
   height: 100vh;
 }
 .explore-loader.fade-out {
-  animation: fadeOut 2s forwards;
+  animation: fadeOut ease 2s;
+  animation-fill-mode: forwards;
+}
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 .explore-loader.no-pointer {
   pointer-events: none;
@@ -242,6 +255,30 @@ video {
   height: 10px;
   border-radius: 20px;
   border: 1px solid #fc0;
+}
+.explore-loader-load-bar > div {
+  width: 0;
+  /* box-shadow: 0 0 30px #fc0; */
+  height: 100%;
+  background: #fc0;
+  /* animation-name: loadUp;
+  animation-duration: 7s;
+  animation-timing-function: ease-out;
+  animation-delay: 0s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-fill-mode: forwards; */
+
+  animation: loadUp 7s ease-out forwards;
+}
+
+@keyframes loadUp {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
 }
 
 /* Responsive Breakpoints */

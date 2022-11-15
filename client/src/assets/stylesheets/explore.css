@@ -36,12 +36,27 @@
   animation: fadeInDownB 2s forwards;
 }
 
+@keyframes fadeInDownB {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 /* Cit Selection */
 .city-selector-cities {
   display: flex;
   flex-direction: column;
   gap: 10px;
   width: 100%;
+}
+
+.city-selector-cities > div.gold {
+  color: var(--pirmary-posh);
+  border: 1px solid var(--pirmary-posh);
+  box-shadow: 0 0 10px -2px var(--pirmary-posh), 0px 0px 10px var(--pirmary-posh) inset;
 }
 
 .city-selector-cities > div {
@@ -61,18 +76,11 @@
   letter-spacing: 3px;
   font-size: 14px;
   cursor: pointer;
-  /* transition: 0.2s; */
-  /* animation: fadeInRightB 2s forwards ease-out; */
-  /* animation: fadeInRightB 2s; */
-  /* opacity: 0; */
-  /* transition: opacity 5s; */
-  /* transform: translateY(200px); */
-  animation-name: fadeInRightB;
-  animation-duration: 2s;
-  animation-delay: 0.5s;
-  animation-timing-function: ease-out;
+  opacity: 0;
+  transition: opacity 5s;
+  transform: translateY(200px);
+  animation: fadeInRightB 2s forwards ease-out;
 }
-
 @keyframes fadeInRightB {
   0% {
     opacity: 0;
@@ -84,15 +92,27 @@
   }
 }
 
-.city-selector-cities > div:hover {
-  /* box-shadow: 0 0 11px rgba(33,33,33,.2);  */
-  box-shadow: 5 10 18px var(--pirmary-dark-posh);
+/* Animate Cities one-by-one */
+.city-selector-cities > div:nth-child(1) {
+  animation-delay: 0.5s !important;
+}
+.city-selector-cities > div:nth-child(2) {
+  animation-delay: 0.75s !important;
+}
+.city-selector-cities > div:nth-child(3) {
+  animation-delay: 1s !important;
+}
+.city-selector-cities > div:nth-child(4) {
+  animation-delay: 1.25s !important;
 }
 
-.city-selector-cities > div.gold {
-  color: var(--pirmary-posh);
-  border: 1px solid var(--pirmary-posh);
-  box-shadow: 0 0 10px -2px var(--pirmary-posh), 0px 0px 10px var(--pirmary-posh) inset;
+/* Hover Effect */
+.city-selector-cities > div:hover {
+  box-shadow: 0 0 25px 1px var(--secondary-posh), 0 0 10px 1px var(--secondary-posh) inset;
+}
+
+.city-selector-cities > div.gold:hover {
+  box-shadow: 0 0 25px 1px var(--primary-posh), 0 0 10px 1px var(--primary-posh) inset;
 }
 
 /* Responsive Breakpoints */

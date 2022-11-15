@@ -1,7 +1,9 @@
 import React, {useEffect} from 'react'
-import {createSearchParams, navigation, useLocation, useNavigate, useSearchParams} from 'react-router-dom'
+
+import {navigation, useNavigate, useSearchParams, createSearchParams, useLocation} from 'react-router-dom'
 
 import useConfetti from 'hooks/useConfetti.js'
+import JSConfetti from 'js-confetti'
 
 const canvasStyle = {
   zIndex: '2',
@@ -13,6 +15,15 @@ const canvasStyle = {
 const SelectCity = props => {
   // * SCRIPTS
   // useConfetti()
+  const jsConfetti = new JSConfetti()
+  const canvas = document.getElementById('posh-canvas')
+  jsConfetti.addConfetti({
+    canvas,
+    confettiRadius: 6,
+    confettiNumber: 500,
+    confettiColors: ['#ffcc00'],
+    particleCount: 2,
+  })
 
   // Navigation
   const navigate = useNavigate()
@@ -27,6 +38,7 @@ const SelectCity = props => {
     navigate({pathname: '/events', search: `?${createSearchParams(params)}`})
   }
 
+  // Update & Push params
   const selectCity = (e, city) => {
     // Version 3
     city == 'nyc' ? (params.city = 'nyc') : ''
@@ -36,27 +48,10 @@ const SelectCity = props => {
     goToEvents()
   }
 
-  const c = searchParams.get('c')
-  const t = searchParams.get('t')
-  const p = searchParams.get('p')
-  const city = searchParams.get('city')
-
-  useEffect(() => {
-    console.log(c, t, p, city)
-  }, [c, t, p, city])
-
-  // const selectCity = e => {
-  //   // Update Params
-  //   e.currentTarget.id == 'nyc' ? setSearchParams({c: 'popular', t: 'week', p: '1', city: 'nyc'}) : ''
-  //   e.currentTarget.id == 'miami' ? setSearchParams({c: 'popular', t: 'week', p: '1', city: 'mia'}) : ''
-  //   e.currentTarget.id == 'la' ? setSearchParams({c: 'popular', t: 'week', p: '1', city: 'la'}) : ''
-  //   e.currentTarget.id == 'near' ? setSearchParams({c: 'popular', t: 'week', p: '1', city: 'near'}) : ''
-  // }
-
   // * TEMPLATE
   return (
     <div className='city-selector'>
-      <canvas width='1296' height='991' style={canvasStyle}></canvas>
+      <canvas id='posh-canvas' width='1296' height='991' style={canvasStyle}></canvas>
       <div className='flex-container'>
         <div className='city-selector-prompt'>Where are you looking for experiences?</div>
         <div className='city-selector-cities'>

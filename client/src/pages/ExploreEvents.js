@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useRef} from 'react'
 import {useLocation, useNavigate, useSearchParams} from 'react-router-dom'
 
 // components
@@ -27,6 +27,7 @@ const ExploreEvents = props => {
 
       if (response.ok) {
         console.log('Events came back:', json)
+        setLoading(false)
         setPoshEvents(json)
       } else {
         console.log('Something went wrong with data fetch ...')
@@ -69,6 +70,16 @@ const ExploreEvents = props => {
     console.log('searchParams', searchParams)
     console.log('searchParams to string:', searchParams.toString())
   }
+
+  // Handle Loading
+  const [loading, setLoading] = useState(true)
+  // const loadingRef = useRef(null);
+  const loadingRef = useRef(null)
+  // useEffect(() => {
+  // ref.current.class.classList.add('fade-out')
+  // const loadingMessage = document.getElementByClassName('explore-loader')
+  // loadingMessage.classList.add('fade-out')
+  // }, [loading])
 
   // * TEMPLATE
   return (
@@ -122,7 +133,8 @@ const ExploreEvents = props => {
           className='explore-back'></img>
       </button>
       {/* "Loading" placeholder*/}
-      {/* <div className='explore-loader fade-out no-pointer'>
+
+      <div className={loading ? 'explore-loader no-pointer' : 'explore-loader no-pointer fade-out'}>
         <canvas width='942' height='1048' style={canvasStyle}></canvas>
         <div className='explore-loader-inner'>
           <div className='explore-loader-text '>Finding the best events for you...</div>
@@ -130,7 +142,7 @@ const ExploreEvents = props => {
             <div></div>
           </div>
         </div>
-      </div> */}
+      </div>
     </div>
   )
 }
