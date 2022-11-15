@@ -65,21 +65,10 @@ const ExploreEvents = props => {
 
     // Update 'searchParams'
     setSearchParams(newParams.toString())
-
-    // TODO DeleteMe
-    console.log('searchParams', searchParams)
-    console.log('searchParams to string:', searchParams.toString())
   }
 
   // Handle Loading
   const [loading, setLoading] = useState(true)
-  // const loadingRef = useRef(null);
-  const loadingRef = useRef(null)
-  // useEffect(() => {
-  // ref.current.class.classList.add('fade-out')
-  // const loadingMessage = document.getElementByClassName('explore-loader')
-  // loadingMessage.classList.add('fade-out')
-  // }, [loading])
 
   // * TEMPLATE
   return (
@@ -116,11 +105,7 @@ const ExploreEvents = props => {
               </div>
             </div>
             <div className='explore-body-main-results event-card-grid'>
-              {/* <div className='events'>{events && events.map(event => <p key={event._id}>{event.name}</p>)}</div> */}
-              {/* <div className='events'> */}
               {poshEvents && poshEvents.map(poshEvent => <EventDetails key={poshEvent._id} poshEvent={poshEvent} />)}
-              {/* </div> */}
-              {/* <div className='no-events'>{!events && <h1>No Events Right Now ...</h1>}</div> */}
             </div>
           </div>
         </div>
@@ -132,8 +117,8 @@ const ExploreEvents = props => {
           src='https://posh-b2.s3.us-east-2.amazonaws.com/left-arrow-in-circular-button-black-symbol.svg'
           className='explore-back'></img>
       </button>
-      {/* "Loading" placeholder*/}
 
+      {/* "Loading" placeholder*/}
       <div className={loading ? 'explore-loader no-pointer' : 'explore-loader no-pointer fade-out'}>
         <canvas width='942' height='1048' style={canvasStyle}></canvas>
         <div className='explore-loader-inner'>

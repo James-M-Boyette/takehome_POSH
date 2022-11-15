@@ -4,9 +4,6 @@ import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom'
 import '../src/assets/webfonts/Nunito/Nunito-Black.ttf'
 import './assets/stylesheets/styles.scss'
 
-import IFrames from './components/IFrames'
-import NavBar from './components/NavBar'
-// import Home from './pages/Home'
 import ExploreEvents from './pages/ExploreEvents'
 import SelectCity from './pages/SelectCity'
 

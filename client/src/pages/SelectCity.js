@@ -1,8 +1,7 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 
-import {navigation, useNavigate, useSearchParams, createSearchParams, useLocation} from 'react-router-dom'
+import {useNavigate, useSearchParams, createSearchParams} from 'react-router-dom'
 
-import useConfetti from 'hooks/useConfetti.js'
 import JSConfetti from 'js-confetti'
 
 const canvasStyle = {
@@ -14,7 +13,6 @@ const canvasStyle = {
 
 const SelectCity = props => {
   // * SCRIPTS
-  // useConfetti()
   const jsConfetti = new JSConfetti()
   const canvas = document.getElementById('posh-canvas')
   jsConfetti.addConfetti({
