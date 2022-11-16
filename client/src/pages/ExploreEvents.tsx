@@ -4,28 +4,13 @@ import {useNavigate, useSearchParams} from 'react-router-dom'
 // components
 import EventDetails from '../components/EventDetails'
 
-type poshEventObject = {
-  _id: string
-  name: string
-  flyer: string
-  groupAvi: string
-  timezone: string
-  startUtc: Date
-  endUtc: Date
-  url: string
-  venueName: string
-  groupName: string
-  location: {
-    coordinates: number[] // ? Check this data type
-    type: string
-  }
-}
+import {PoshEventObject} from 'interface/poshEventObject'
 
 const ExploreEvents = () => {
   // * SCRIPTS
 
   // Fetch "Events" Data
-  const [poshEvents, setPoshEvents] = useState<poshEventObject[]>([])
+  const [poshEvents, setPoshEvents] = useState<PoshEventObject[]>([])
 
   useEffect(() => {
     const fetchPoshEvents = async () => {

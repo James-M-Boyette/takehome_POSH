@@ -1,37 +1,19 @@
-import React, {useEffect, useState} from 'react'
+import React, {FunctionComponent} from 'react'
 
 import {PoshEventObject} from 'interface/poshEventObject'
 
-// Passing-in our prop 'event' + destructuring it
-// const EventDetails = (poshEvent: poshEventObject) => {
-// function greet(person: { name: string; age: number }) {
-const EventDetails = (props: {poshEvent: PoshEventObject}) => {
-  // const EventDetails = ({poshEvent}) => {
-  const poshEvent = props.poshEvent
-  // * SCRIPTS
-  console.log(typeof poshEvent)
-  // console.log(typeof poshEvent.poshEvent)
-  // console.log(typeof poshEvent.poshEvent.name)
-  console.log('PoshEvent:', poshEvent.poshEvent)
+interface Props {
+  poshEvent: PoshEventObject
+}
 
+// Pass-in our prop 'poshEvent' + destructure it
+const EventDetails: FunctionComponent<Props> = ({poshEvent}) => {
+  // * SCRIPTS
   // Re-Format DOTW
   const getDOTW = () => {
-    // const eventDate = new Date(poshEvent.startUtc.slice(0, 10))
-    //
-    // const date = new Date(poshEvent.startUtc)
-    // const day = date.toLocaleDateString('en-US', {weekday: 'short'})
-    // console.log('Date2:', date)
-    // console.log('Date3:', day)
-
-    // const date = new Date(poshEvent.startUtc).toLocaleDateString('en-US', {weekday: 'short'})
-    // console.log('Date:', date)
-
-    // return eventDate.toLocaleDateString('en-US', {weekday: 'short'})
     return new Date(poshEvent.startUtc).toLocaleDateString('en-US', {weekday: 'short'})
   }
-  getDOTW()
   let eventDay = getDOTW()
-  // let eventDay = 'Thurs'
 
   // Event URL
   const RedirectPage = () => {
