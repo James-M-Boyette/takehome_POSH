@@ -4,30 +4,58 @@ const Schema = mongoose.Schema // Defines the structure of a document in a DB
 
 const eventSchema = new Schema(
   {
-    /**
-     * TODO: FIX BELOW PROPS
-     */
-    title: {
-      // title of the exercise
+    // Name of Event
+    name: {
       type: String,
       required: true,
     },
-    reps: {
-      // how many reps were completed of the excersize
-      type: Number,
+    // Flyer Image/Background for Event
+    flyer: {
+      type: String,
       required: true,
     },
-    load: {
-      // how heavy should the weight be
-      type: Number,
+    // Event's Group (image)
+    groupAvi: {
+      type: String,
+      required: true,
+    },
+    // TimeZone
+    timezone: {
+      type: String,
+      required: true,
+    },
+    // Start Time + Date
+    startUtc: {
+      type: String,
+      required: true,
+    },
+    // End Time + Date
+    endUtc: {
+      type: String,
+      required: true,
+    },
+    // Event Page URL
+    url: {
+      type: String,
+      required: true,
+    },
+    // Venue
+    venueName: {
+      type: String,
+      required: true,
+    },
+    // Event's Group (name)
+    groupName: {
+      type: String,
+      required: true,
+    },
+    // Location
+    location: {
+      type: Object,
       required: true,
     },
   },
   {timestamps: true}, // auto-create timestamps for us
 )
 
-export default mongoose.model('Event', eventSchema) // First argument will create a "Event" collection, and the second applies the specified schema
-
-// Event.find()
-
-// Models apply schema to a model,
+export default mongoose.model('Event', eventSchema) // First argument will
