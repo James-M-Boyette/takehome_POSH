@@ -1,6 +1,5 @@
 import React from 'react'
-
-import {useNavigate, useSearchParams, createSearchParams} from 'react-router-dom'
+import {createSearchParams, useNavigate, useSearchParams} from 'react-router-dom'
 
 import JSConfetti from 'js-confetti'
 
