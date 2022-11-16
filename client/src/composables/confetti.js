@@ -1,3 +1,8 @@
+/**
+ * ! Couldn't get this to work
+ *   - However, if you try it [here](https://www.kirilv.com/canvas-confetti/) under the "snow" example, it looks almost the same as Posh's current confetti animation ...
+ */
+
 const duration = 5 * 1000
 const animationEnd = Date.now() + duration
 const skew = 1

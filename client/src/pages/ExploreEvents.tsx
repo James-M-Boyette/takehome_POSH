@@ -1,36 +1,46 @@
-import React, {useEffect, useRef, useState} from 'react'
-import {useLocation, useNavigate, useSearchParams} from 'react-router-dom'
+import React, {useEffect, useState} from 'react'
+import {useNavigate, useSearchParams} from 'react-router-dom'
 
 // components
-import EventDetails from '../components/EventDetails.js'
+import EventDetails from '../components/EventDetails'
 
-const canvasStyle = {
-  zIndex: 2,
-  position: 'absolute',
-  pointerEvents: 'none',
-  inset: '0px',
+type poshEventObject = {
+  _id: string
+  name: string
+  flyer: string
+  groupAvi: string
+  timezone: string
+  startUtc: Date
+  endUtc: Date
+  url: string
+  venueName: string
+  groupName: string
+  location: {
+    coordinates: number[] // ? Check this data type
+    type: string
+  }
 }
 
-const ExploreEvents = props => {
+const ExploreEvents = () => {
   // * SCRIPTS
-  // const {state} = useLocation()
 
-  // Fetch "Events"
-  const [poshEvents, setPoshEvents] = useState(null)
+  // Fetch "Events" Data
+  const [poshEvents, setPoshEvents] = useState<poshEventObject[]>([])
 
   useEffect(() => {
     const fetchPoshEvents = async () => {
-      const response = await fetch('http://localhost:4042/api/events').then(console.log('Fetch Finished 🦼'))
+      const response = await fetch('http://localhost:4042/api/events')
+      console.log('🐕 Fetch Finished!')
 
       // Parse the json
       const json = await response.json()
 
       if (response.ok) {
-        console.log('Events came back:', json)
+        // console.log('Events came back:', json) // For debugging
         setLoading(false)
         setPoshEvents(json)
       } else {
-        console.log('Something went wrong with data fetch ...')
+        console.log('🚨 Something went wrong with data fetch ...')
       }
     }
 
@@ -41,22 +51,23 @@ const ExploreEvents = props => {
   const navigate = useNavigate()
 
   // Style Nav Button
-  const updateButton = e => {
-    const eventButtons = Array.from(document.getElementsByClassName('event-select'))
-    eventButtons.forEach(x => x.classList.remove('selected'))
-
+  const removeSelectedClass = () => {
+    const eventButtons: Element[] = Array.from(document.getElementsByClassName('event-select'))
+    eventButtons.forEach(button => button.classList.remove('selected'))
+  }
+  const updateButton = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    removeSelectedClass()
     e.currentTarget.classList.add('selected')
   }
 
-  // Params
+  // Params Hook + Store Params
   const [searchParams, setSearchParams] = useSearchParams()
+  let newParams = new URLSearchParams(searchParams.toString())
 
   // Handle User Time-Range Selection
-  const selectTimeRange = (e, id) => {
-    // Style Button
+  const selectTimeRange = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, id: string) => {
+    // Re-Style Buttons
     updateButton(e)
-    // Store Params
-    let newParams = new URLSearchParams(searchParams.toString())
 
     // Update Params
     id == 'this-week' ? newParams.set('t', 'week') : ''
@@ -77,7 +88,6 @@ const ExploreEvents = props => {
       <div className='explore'>
         <video
           autoPlay={true}
-          playsInline=''
           loop={true}
           className='explore-video false'
           src='https://posh-b2.s3.us-east-2.amazonaws.com/meta+(1).mp4'></video>
@@ -120,7 +130,7 @@ const ExploreEvents = props => {
 
       {/* "Loading" placeholder*/}
       <div className={loading ? 'explore-loader no-pointer' : 'explore-loader no-pointer fade-out'}>
-        <canvas width='942' height='1048' style={canvasStyle}></canvas>
+        <canvas width='942' height='1048'></canvas>
         <div className='explore-loader-inner'>
           <div className='explore-loader-text '>Finding the best events for you...</div>
           <div className='explore-loader-load-bar '>
