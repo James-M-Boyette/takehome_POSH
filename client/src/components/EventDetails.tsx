@@ -9,11 +9,11 @@ interface Props {
 // Pass-in our prop 'poshEvent' + destructure it
 const EventDetails: FunctionComponent<Props> = ({poshEvent}) => {
   // * SCRIPTS
-  // Re-Format DOTW
+  // Re-Format 'Day of the Week'
   const getDOTW = () => {
     return new Date(poshEvent.startUtc).toLocaleDateString('en-US', {weekday: 'short'})
   }
-  let eventDay = getDOTW()
+  const eventDay = getDOTW()
 
   // Event URL
   const RedirectPage = () => {

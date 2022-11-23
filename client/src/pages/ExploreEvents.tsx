@@ -6,6 +6,39 @@ import EventDetails from '../components/EventDetails'
 
 import {PoshEventObject} from 'interface/poshEventObject'
 
+// interface City {
+//   [nyc:string]:{
+//     long: string
+//     lat: string
+//   }
+//   mia:{
+//     long: string
+//     lat: string
+//   }
+//   la:{
+//     long: string
+//     lat: string
+//   }
+// }
+
+// const cities:City = {
+const cities = {
+  nyc: {
+    long: "-73.935242",
+    lat: "40.73061"
+  },
+  mia: {
+    long: "-80.191788",
+    lat: "25.761681"
+  },
+  la: {
+    long: "-118.321495",
+    lat: "34.134117"
+  },
+}
+
+type CitiesKey = keyof typeof cities
+
 const ExploreEvents = () => {
   // * SCRIPTS
 
@@ -19,11 +52,33 @@ const ExploreEvents = () => {
 
       // Parse the json
       const json = await response.json()
+      // let filteredResults = null
 
       if (response.ok) {
         // console.log('Events came back:', json) // For debugging
         setLoading(false)
-        setPoshEvents(json)
+        // console.log('json: ', json);
+        // console.log('filtered json (single object): ', json[0].location.coordinates);
+        // const paramsCity = newParams.get('city') as CitiesKey
+
+        // Get the current 'city' param, and store its coordinates from the 'cities' object
+        const cityLongLat = cities[newParams.get('city') as CitiesKey]
+        // console.log('city params: ', paramsCity);
+        // const paramsCityLong = cities[paramsCity].long
+        // const paramsCityLong = cities[paramsCity]
+        // console.log('city params longitude: ', paramsCityLong);
+        console.log('city long & lat: ', cityLongLat);
+        
+
+        // const matchedLong = json.filter((el:any) => {
+        //   return el.location.coordinates[0] == "-73.935242";   
+        // });
+        const filteredEvents = json.filter((el:any) => {
+          // return (el.location.coordinates[0] == cities.nyc.long && el.location.coordinates[1] == cities.nyc.lat);   
+          return (el.location.coordinates[0] == cityLongLat.long && el.location.coordinates[1] == cityLongLat.lat);   
+        });
+        console.log('filtered json (multiple objects): ', filteredEvents)
+        setPoshEvents(filteredEvents)
       } else {
         console.log('🚨 Something went wrong with data fetch ...')
       }
@@ -62,6 +117,23 @@ const ExploreEvents = () => {
     // Update 'searchParams'
     setSearchParams(newParams.toString())
   }
+
+  // GeoLocation
+  let userGeoLocation = null
+  const geoLocate = () => {
+    if ('geolocation' in navigator) {
+      /* geolocation is available */
+      console.log('🌍 geolocation found!')
+      navigator.geolocation.getCurrentPosition(position => {
+        userGeoLocation = position.coords
+        console.log('🎯 User lat, long: ', userGeoLocation.latitude, userGeoLocation.longitude)
+      })
+    } else {
+      /* geolocation IS NOT available */
+      console.log('🌍❌ geolocation NOT found ...')
+    }
+  }
+  geoLocate()
 
   // Handle Loading
   const [loading, setLoading] = useState(true)
