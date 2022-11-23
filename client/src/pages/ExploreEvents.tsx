@@ -6,22 +6,8 @@ import EventDetails from '../components/EventDetails'
 
 import {PoshEventObject} from 'interface/poshEventObject'
 
-// interface City {
-//   [nyc:string]:{
-//     long: string
-//     lat: string
-//   }
-//   mia:{
-//     long: string
-//     lat: string
-//   }
-//   la:{
-//     long: string
-//     lat: string
-//   }
-// }
+interface PoshEventsArray extends Array<PoshEventObject>{}
 
-// const cities:City = {
 const cities = {
   nyc: {
     long: "-73.935242",
@@ -39,6 +25,7 @@ const cities = {
 
 type CitiesKey = keyof typeof cities
 
+
 const ExploreEvents = () => {
   // * SCRIPTS
 
@@ -50,35 +37,20 @@ const ExploreEvents = () => {
       const response = await fetch('http://localhost:4042/api/events')
       console.log('🐕 Fetch Finished!')
 
-      // Parse the json
-      const json = await response.json()
-      // let filteredResults = null
+      // Parse the JSON into an array of PoshEvent objects
+      const json:PoshEventsArray = await response.json()
 
       if (response.ok) {
-        // console.log('Events came back:', json) // For debugging
+        // Tranisition from 'Loading' screen to filtered events
         setLoading(false)
-        // console.log('json: ', json);
-        // console.log('filtered json (single object): ', json[0].location.coordinates);
-        // const paramsCity = newParams.get('city') as CitiesKey
-
-        // Get the current 'city' param, and store its coordinates from the 'cities' object
-        const cityLongLat = cities[newParams.get('city') as CitiesKey]
-        // console.log('city params: ', paramsCity);
-        // const paramsCityLong = cities[paramsCity].long
-        // const paramsCityLong = cities[paramsCity]
-        // console.log('city params longitude: ', paramsCityLong);
-        console.log('city long & lat: ', cityLongLat);
-        
-
-        // const matchedLong = json.filter((el:any) => {
-        //   return el.location.coordinates[0] == "-73.935242";   
-        // });
-        const filteredEvents = json.filter((el:any) => {
-          // return (el.location.coordinates[0] == cities.nyc.long && el.location.coordinates[1] == cities.nyc.lat);   
-          return (el.location.coordinates[0] == cityLongLat.long && el.location.coordinates[1] == cityLongLat.lat);   
-        });
-        console.log('filtered json (multiple objects): ', filteredEvents)
-        setPoshEvents(filteredEvents)
+        console.log('PARAMS city :', newParams.get('city'));
+        // Filter JSON Results by 'Near Me'
+        if(newParams.get('city')  == 'near'){
+          geoLocate()
+        } else {
+        // Filter JSON Results by City
+          filterByCity(json)
+        }
       } else {
         console.log('🚨 Something went wrong with data fetch ...')
       }
@@ -118,22 +90,117 @@ const ExploreEvents = () => {
     setSearchParams(newParams.toString())
   }
 
+  // Filter By City
+  const filterByCity = (json:PoshEventsArray) => {
+    const cityLongLat = cities[newParams.get('city') as CitiesKey]
+    const filteredEvents = json.filter((el) => {
+      return (el.location.coordinates[0] == cityLongLat.long && el.location.coordinates[1] == cityLongLat.lat);   
+    });
+    // Store filtered events (to be itterated-through using eventDetails component)
+    setPoshEvents(filteredEvents)
+  }
+
   // GeoLocation
-  let userGeoLocation = null
+  // interface UserLocation {
+  //   latitude: string
+  //   longitude: string
+  // }
+
+  // "lat" = vertical
+  // "long" = horizontal
   const geoLocate = () => {
     if ('geolocation' in navigator) {
       /* geolocation is available */
       console.log('🌍 geolocation found!')
-      navigator.geolocation.getCurrentPosition(position => {
-        userGeoLocation = position.coords
-        console.log('🎯 User lat, long: ', userGeoLocation.latitude, userGeoLocation.longitude)
-      })
+
+      let userLocation:GeolocationCoordinates 
+      // let userLatitude 
+      // let userLongitude
+
+      // const getLongAndLat = async () =>{
+      //   navigator.geolocation.getCurrentPosition(onSuccess, onError)
+      // }
+
+      // const onSuccess = async (position:any) => {
+      //   userLatitude = position.coords.latitude;
+      //   userLongitude = position.coords.longitude;
+      // }
+
+      // function onError(error:any) {
+      //   alert('Error: ' + error.message);
+      // }
+
+      // const locateButtonFetch = async () => {
+      //   await getLongAndLat();
+      // }
+
+      let getLocation = () => new Promise((resolve, reject) => 
+      navigator.geolocation.getCurrentPosition(resolve, reject));
+
+      const main = async () => {
+        try {
+          console.log('getting location...');
+          let location:any = await getLocation();
+          const userLatitude = location.coords.latitude
+          const userLongitude = location.coords.longitude
+          console.log('got location', userLatitude, userLongitude);
+          let city
+          // Assign City
+          if (
+            (userLatitude <= 42 && userLatitude >= 38) 
+            && 
+            (userLongitude <= 42 && userLongitude >= 38)
+            ) {
+              console.log(userLatitude, userLongitude, "N.Y.C");
+              city = 'nyc'
+            } else if ( 
+              (userLatitude <= 28 && userLatitude >= 23) 
+              && (userLongitude <= 42 && userLongitude >= 38)
+            ) {
+              console.log(userLatitude, userLongitude, "MIA");
+              city = 'mia'
+            } else if ( 
+              (userLatitude <= 36 && userLatitude >= 32) 
+              && 
+              (userLongitude <= 42 && userLongitude >= 38)
+              ) {
+              console.log(userLatitude, userLongitude, "L.A.");
+              city = 'la'
+            } else {
+              console.log(userLatitude, userLongitude, "DEFAULTED to NYC");
+              city = 'nyc'
+            }
+        } catch (e) {
+          console.log('ERROR', e.message);
+        }
+      }
+
+
+      main()
+      
+      // console.log('location: ', location);
+
+      // Working (kinda)
+      // navigator.geolocation.getCurrentPosition(position => {
+      //   userLocation = position.coords
+      //   userLatitude = position.coords.latitude
+      //   userLongitude = position.coords.longitude
+      //   console.log('🎯 User lat, long: ', userLatitude, userLongitude)
+      // })
+
+      // if(userLocation.longitude < -100) {
+      //   console.log('LA')
+      // }
+      // if (userLocation.longitude > -100 && userLocation.latitude > 32) {
+      //   console.log('NYC');
+      // } else {
+      //   console.log('MIA');
+      // }
     } else {
       /* geolocation IS NOT available */
       console.log('🌍❌ geolocation NOT found ...')
     }
   }
-  geoLocate()
 
   // Handle Loading
   const [loading, setLoading] = useState(true)

@@ -10,7 +10,7 @@ export interface PoshEventObject {
   venueName: string
   groupName: string
   location: {
-    coordinates: number[] // ? Check this data type
+    coordinates: string[]
     type: string
   }
 }
