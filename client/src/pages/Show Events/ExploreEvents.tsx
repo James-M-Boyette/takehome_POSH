@@ -1,69 +1,42 @@
 import React, {useEffect, useState} from 'react'
 import {useNavigate, useSearchParams} from 'react-router-dom'
 
-// components
-import EventDetails from '../../components/Show Events/EventDetails'
-import {fetchPoshEvents} from '../../components/Show Events/fetchEvents'
-
+// import {fetchPoshEvents} from '../../components/Show Events/fetchEvents'
 import {PoshEventObject} from 'interface/poshEventObject'
 
-interface PoshEventsArray extends Array<PoshEventObject>{}
+// components
+import EventDetails from '../../components/Show Events/EventDetails'
+
+type PoshEventsArray = Array<PoshEventObject>
 
 const cities = {
   nyc: {
-    long: "-73.935242",
-    lat: "40.73061"
+    long: '-73.935242',
+    lat: '40.73061',
   },
   mia: {
-    long: "-80.191788",
-    lat: "25.761681"
+    long: '-80.191788',
+    lat: '25.761681',
   },
   la: {
-    long: "-118.321495",
-    lat: "34.134117"
+    long: '-118.321495',
+    lat: '34.134117',
   },
 }
 
 type CitiesKey = keyof typeof cities
 
-
 const ExploreEvents = () => {
   // * SCRIPTS
 
-  // Fetch "Events" Data
-  const [poshEvents, setPoshEvents] = useState<PoshEventObject[]>([])
-
-  const fetchPoshEvents = async () => {
-    const response = await fetch('http://localhost:4042/api/events')
-    console.log('🐕 Fetch Finished!')
-
-    // Parse the JSON into an array of PoshEvent objects
-    const json:PoshEventsArray = await response.json()
-
-    if (response.ok) {
-      // Tranisition from 'Loading' screen to filtered events
-      setLoading(false)
-      console.log('PARAMS city :', newParams.get('city'));
-      // Filter JSON Results by 'Near Me'
-      if(newParams.get('city')  == 'near'){
-        geoLocate()
-      } else {
-      // Filter JSON Results by City
-        filterByCity(json)
-      }
-    } else {
-      console.log('🚨 Something went wrong with data fetch ...')
-    }
-  }
-
-  useEffect(() => {
-    fetchPoshEvents()
-  }, [])
+  // * ** PAGE ELEMENTS **
+  // Handle Loading
+  const [loading, setLoading] = useState(true)
 
   // "Back" arrow/button Navigation
   const navigate = useNavigate()
 
-  // Style Nav Button
+  // Style "Time" Nav Button
   const removeSelectedClass = () => {
     const eventButtons: Element[] = Array.from(document.getElementsByClassName('event-select'))
     eventButtons.forEach(button => button.classList.remove('selected'))
@@ -73,30 +46,43 @@ const ExploreEvents = () => {
     e.currentTarget.classList.add('selected')
   }
 
-  // Params Hook + Store Params
-  const [searchParams, setSearchParams] = useSearchParams()
-  let newParams = new URLSearchParams(searchParams.toString())
+  // * ** EVENTS **
+  // Fetch "Events" Data
+  const [poshEvents, setPoshEvents] = useState<PoshEventObject[]>([])
 
-  // Handle User Time-Range Selection
-  const selectTimeRange = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, id: string) => {
-    // Re-Style Buttons
-    updateButton(e)
+  const fetchPoshEvents = async () => {
+    const response = await fetch('http://localhost:4042/api/events')
+    console.log('🐕 Fetch Finished!')
 
-    // Update Params
-    id == 'this-week' ? newParams.set('t', 'week') : ''
-    id == 'today' ? newParams.set('t', 'today') : ''
-    id == 'thanksgiving' ? newParams.set('t', 'thanksgiving') : ''
+    // Parse the JSON into an array of PoshEvent objects
+    const json: PoshEventsArray = await response.json()
 
-    // Update 'searchParams'
-    setSearchParams(newParams.toString())
+    if (response.ok) {
+      // Tranisition from 'Loading' screen to filtered events
+      setLoading(false)
+      console.log('PARAMS city :', newParams.get('city'))
+      // Filter JSON Results by 'Near Me'
+      if (newParams.get('city') == 'near') {
+        geoLocate()
+      } else {
+        // Filter JSON Results by City
+        filterByCity(json)
+      }
+    } else {
+      console.log('🚨 Something went wrong with data fetch ...')
+    }
   }
 
+  useEffect(() => {
+    fetchPoshEvents()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   // Filter By City
-  const filterByCity = (json:PoshEventsArray) => {
+  const filterByCity = (json: PoshEventsArray) => {
     const cityLongLat = cities[newParams.get('city') as CitiesKey]
-    const filteredEvents = json.filter((el) => {
-      return (el.location.coordinates[0] == cityLongLat.long && el.location.coordinates[1] == cityLongLat.lat);   
-    });
+    const filteredEvents = json.filter(el => {
+      return el.location.coordinates[0] == cityLongLat.long && el.location.coordinates[1] == cityLongLat.lat
+    })
     // Store filtered events (to be itterated-through using eventDetails component)
     setPoshEvents(filteredEvents)
   }
@@ -107,25 +93,25 @@ const ExploreEvents = () => {
       /* geolocation is available */
       console.log('🌍 geolocation found!')
 
-      const getGeoLocation = () => new Promise((resolve, reject) => 
-      navigator.geolocation.getCurrentPosition(resolve, reject));
+      const getGeoLocation = () =>
+        new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject))
 
       const assignLocation = async () => {
         try {
-        // Store location coordinates
-        const location:any = await getGeoLocation();
-        const userLatitude = location.coords.latitude
-        const userLongitude = location.coords.longitude
-        console.log('Stored location coordinates: ', userLatitude, userLongitude);
-        // Assign City
-        if (userLatitude <= 42 && userLatitude >= 38 && userLongitude <= 42 && userLongitude >= 38) {
+          // Store location coordinates
+          const location: any = await getGeoLocation() // eslint-disable-line 
+          const userLatitude = location.coords.latitude
+          const userLongitude = location.coords.longitude
+          console.log('Stored location coordinates: ', userLatitude, userLongitude)
+          // Assign City
+          if (userLatitude <= 42 && userLatitude >= 38 && userLongitude <= 42 && userLongitude >= 38) {
             console.log(userLatitude, userLongitude, 'N.Y.C')
             newParams.set('city', 'nyc')
-          } else if (userLatitude <= 28 && userLatitude >= 23 && userLongitude <= 42 && userLongitude >= 38)
-          { console.log(userLatitude, userLongitude, 'MIA')
+          } else if (userLatitude <= 28 && userLatitude >= 23 && userLongitude <= 42 && userLongitude >= 38) {
+            console.log(userLatitude, userLongitude, 'MIA')
             newParams.set('city', 'mia')
-          } else if (userLatitude <= 36 && userLatitude >= 32 && userLongitude <= 42 && userLongitude >= 38)
-          { console.log(userLatitude, userLongitude, 'L.A.')
+          } else if (userLatitude <= 36 && userLatitude >= 32 && userLongitude <= 42 && userLongitude >= 38) {
+            console.log(userLatitude, userLongitude, 'L.A.')
             newParams.set('city', 'la')
           } else {
             console.log(userLatitude, userLongitude, 'DEFAULTED to NYC')
@@ -143,8 +129,24 @@ const ExploreEvents = () => {
     }
   }
 
-  // Handle Loading
-  const [loading, setLoading] = useState(true)
+  // * ** PARAMS **
+  // Params Hook + Store Params
+  const [searchParams, setSearchParams] = useSearchParams()
+  const newParams = new URLSearchParams(searchParams.toString())
+
+  // Handle User Time-Range Selection
+  const selectTimeRange = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, id: string) => {
+    // Re-Style Buttons
+    updateButton(e)
+
+    // Update Params
+    id == 'this-week' ? newParams.set('t', 'week') : ''
+    id == 'today' ? newParams.set('t', 'today') : ''
+    id == 'thanksgiving' ? newParams.set('t', 'thanksgiving') : ''
+
+    // Update 'searchParams'
+    setSearchParams(newParams.toString())
+  }
 
   // * TEMPLATE
   return (

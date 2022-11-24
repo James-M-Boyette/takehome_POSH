@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "./src/**/*.ts", 
+    "./src/**/*.tsx", 
+    "./src/pages/**/*.tsx", 
+    "./src/pages/Select City/Select City.tsx",
+    "./src/pages/Show Events/ExploreEvents.tsx",
+    "./src/components/Show Events/EventDetails.tsx",
+  ]
+}

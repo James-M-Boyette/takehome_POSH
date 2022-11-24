@@ -4,8 +4,8 @@ import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom'
 import '../src/assets/webfonts/Nunito/Nunito-Black.ttf'
 import './assets/stylesheets/styles.scss'
 
-import ExploreEvents from './pages/Show Events/ExploreEvents'
 import SelectCity from './pages/Select City/SelectCity'
+import ExploreEvents from './pages/Show Events/ExploreEvents'
 
 const App = () => {
   // * SCRIPTS

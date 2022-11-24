@@ -3,13 +3,6 @@ import {createSearchParams, useNavigate, useSearchParams} from 'react-router-dom
 
 import JSConfetti from 'js-confetti'
 
-const canvasStyle = {
-  zIndex: '2',
-  position: 'absolute',
-  pointerEvents: 'none',
-  inset: '0px',
-}
-
 const SelectCity = () => {
   // * SCRIPTS
   const jsConfetti = new JSConfetti()
@@ -26,7 +19,7 @@ const SelectCity = () => {
   const params = {c: 'popular', t: 'week', p: '1', city: ''} // *Hardcoded bc this is how I understand Posh's 'explore' page to be currently set up; would've used `useSearchParams()` hook otherwise ...
 
   // Params State
-  const [searchParams, setSearchParams] = useSearchParams(params)
+  const [searchParams, setSearchParams] = useSearchParams(params) // eslint-disable-line 
 
   // Navigate
   const goToEvents = () => {
@@ -51,16 +44,16 @@ const SelectCity = () => {
       <div className='flex-container'>
         <div className='city-selector-prompt'>Where are you looking for experiences?</div>
         <div className='city-selector-cities'>
-          <div className='gold' onClick={e => selectCity('nyc')}>
+          <div className='gold' onClick={() => selectCity('nyc')}>
             <span>🗽 New York</span>
           </div>
-          <div className='gold' onClick={e => selectCity('miami')}>
+          <div className='gold' onClick={() => selectCity('miami')}>
             <span>🌴 Miami</span>
           </div>
-          <div className='gold' onClick={e => selectCity('la')}>
+          <div className='gold' onClick={() => selectCity('la')}>
             <span>☀️ Los Angeles</span>
           </div>
-          <div className='' onClick={e => selectCity('near')}>
+          <div className='' onClick={() => selectCity('near')}>
             <span>📍 Near Me</span>
           </div>
         </div>
