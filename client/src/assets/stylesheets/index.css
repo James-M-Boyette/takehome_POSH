@@ -334,7 +334,7 @@ video {
 }
 
 .event-card:hover {
-  transform: scale(1.05);
+  transform: scale(1.025);
 }
 
 .event-card-info {
