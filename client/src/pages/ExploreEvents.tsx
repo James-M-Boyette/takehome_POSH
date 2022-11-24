@@ -32,30 +32,30 @@ const ExploreEvents = () => {
   // Fetch "Events" Data
   const [poshEvents, setPoshEvents] = useState<PoshEventObject[]>([])
 
-  useEffect(() => {
-    const fetchPoshEvents = async () => {
-      const response = await fetch('http://localhost:4042/api/events')
-      console.log('🐕 Fetch Finished!')
+  const fetchPoshEvents = async () => {
+    const response = await fetch('http://localhost:4042/api/events')
+    console.log('🐕 Fetch Finished!')
 
-      // Parse the JSON into an array of PoshEvent objects
-      const json:PoshEventsArray = await response.json()
+    // Parse the JSON into an array of PoshEvent objects
+    const json:PoshEventsArray = await response.json()
 
-      if (response.ok) {
-        // Tranisition from 'Loading' screen to filtered events
-        setLoading(false)
-        console.log('PARAMS city :', newParams.get('city'));
-        // Filter JSON Results by 'Near Me'
-        if(newParams.get('city')  == 'near'){
-          geoLocate()
-        } else {
-        // Filter JSON Results by City
-          filterByCity(json)
-        }
+    if (response.ok) {
+      // Tranisition from 'Loading' screen to filtered events
+      setLoading(false)
+      console.log('PARAMS city :', newParams.get('city'));
+      // Filter JSON Results by 'Near Me'
+      if(newParams.get('city')  == 'near'){
+        geoLocate()
       } else {
-        console.log('🚨 Something went wrong with data fetch ...')
+      // Filter JSON Results by City
+        filterByCity(json)
       }
+    } else {
+      console.log('🚨 Something went wrong with data fetch ...')
     }
+  }
 
+  useEffect(() => {
     fetchPoshEvents()
   }, [])
 
@@ -101,101 +101,41 @@ const ExploreEvents = () => {
   }
 
   // GeoLocation
-  // interface UserLocation {
-  //   latitude: string
-  //   longitude: string
-  // }
-
-  // "lat" = vertical
-  // "long" = horizontal
   const geoLocate = () => {
     if ('geolocation' in navigator) {
       /* geolocation is available */
       console.log('🌍 geolocation found!')
 
-      let userLocation:GeolocationCoordinates 
-      // let userLatitude 
-      // let userLongitude
-
-      // const getLongAndLat = async () =>{
-      //   navigator.geolocation.getCurrentPosition(onSuccess, onError)
-      // }
-
-      // const onSuccess = async (position:any) => {
-      //   userLatitude = position.coords.latitude;
-      //   userLongitude = position.coords.longitude;
-      // }
-
-      // function onError(error:any) {
-      //   alert('Error: ' + error.message);
-      // }
-
-      // const locateButtonFetch = async () => {
-      //   await getLongAndLat();
-      // }
-
-      let getLocation = () => new Promise((resolve, reject) => 
+      const getGeoLocation = () => new Promise((resolve, reject) => 
       navigator.geolocation.getCurrentPosition(resolve, reject));
 
-      const main = async () => {
+      const assignLocation = async () => {
         try {
-          console.log('getting location...');
-          let location:any = await getLocation();
-          const userLatitude = location.coords.latitude
-          const userLongitude = location.coords.longitude
-          console.log('got location', userLatitude, userLongitude);
-          let city
-          // Assign City
-          if (
-            (userLatitude <= 42 && userLatitude >= 38) 
-            && 
-            (userLongitude <= 42 && userLongitude >= 38)
-            ) {
-              console.log(userLatitude, userLongitude, "N.Y.C");
-              city = 'nyc'
-            } else if ( 
-              (userLatitude <= 28 && userLatitude >= 23) 
-              && (userLongitude <= 42 && userLongitude >= 38)
-            ) {
-              console.log(userLatitude, userLongitude, "MIA");
-              city = 'mia'
-            } else if ( 
-              (userLatitude <= 36 && userLatitude >= 32) 
-              && 
-              (userLongitude <= 42 && userLongitude >= 38)
-              ) {
-              console.log(userLatitude, userLongitude, "L.A.");
-              city = 'la'
-            } else {
-              console.log(userLatitude, userLongitude, "DEFAULTED to NYC");
-              city = 'nyc'
-            }
+        // Store location coordinates
+        const location:any = await getGeoLocation();
+        const userLatitude = location.coords.latitude
+        const userLongitude = location.coords.longitude
+        console.log('Stored location coordinates: ', userLatitude, userLongitude);
+        // Assign City
+        if (userLatitude <= 42 && userLatitude >= 38 && userLongitude <= 42 && userLongitude >= 38) {
+            console.log(userLatitude, userLongitude, 'N.Y.C')
+            newParams.set('city', 'nyc')
+          } else if (userLatitude <= 28 && userLatitude >= 23 && userLongitude <= 42 && userLongitude >= 38)
+          { console.log(userLatitude, userLongitude, 'MIA')
+            newParams.set('city', 'mia')
+          } else if (userLatitude <= 36 && userLatitude >= 32 && userLongitude <= 42 && userLongitude >= 38)
+          { console.log(userLatitude, userLongitude, 'L.A.')
+            newParams.set('city', 'la')
+          } else {
+            console.log(userLatitude, userLongitude, 'DEFAULTED to NYC')
+            newParams.set('city', 'nyc')
+          }
+          fetchPoshEvents()
         } catch (e) {
-          console.log('ERROR', e.message);
+          console.log('ERROR', e.message)
         }
       }
-
-
-      main()
-      
-      // console.log('location: ', location);
-
-      // Working (kinda)
-      // navigator.geolocation.getCurrentPosition(position => {
-      //   userLocation = position.coords
-      //   userLatitude = position.coords.latitude
-      //   userLongitude = position.coords.longitude
-      //   console.log('🎯 User lat, long: ', userLatitude, userLongitude)
-      // })
-
-      // if(userLocation.longitude < -100) {
-      //   console.log('LA')
-      // }
-      // if (userLocation.longitude > -100 && userLocation.latitude > 32) {
-      //   console.log('NYC');
-      // } else {
-      //   console.log('MIA');
-      // }
+      assignLocation()
     } else {
       /* geolocation IS NOT available */
       console.log('🌍❌ geolocation NOT found ...')
