@@ -21,7 +21,7 @@ const SelectCity = () => {
 
   // Navigate
   const goToEvents = () => {
-    setSearchParams(params)
+    // setSearchParams(params)
     navigate({pathname: '/events', search: `?${createSearchParams(params)}`})
   }
 
@@ -32,8 +32,52 @@ const SelectCity = () => {
     city == 'miami' ? (params.city = 'mia') : ''
     city == 'la' ? (params.city = 'la') : ''
     city == 'near' ? (params.city = 'near') : ''
+    setSearchParams(params)
     goToEvents()
   }
+
+  // Resolve User's GeoLocation as a city + store in params
+  // const setGeoLocation = () => {
+  //   if ('geolocation' in navigator) {
+  //     /* geolocation is available */
+  //     console.log('🌍 geolocation found!')
+
+  //     const getGeoLocation = () =>
+  //       new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject))
+
+  //     const assignLocation = async () => {
+  //       try {
+  //         // Store User's Location Coordinates
+  //         const location: any = await getGeoLocation() // eslint-disable-line
+  //         const userLatitude = location.coords.latitude
+  //         const userLongitude = location.coords.longitude
+  //         // Assign City
+  //         if (userLatitude <= 42 && userLatitude >= 38 && userLongitude <= 42 && userLongitude >= 38) {
+  //           console.log('Stored location coordinates: ', userLatitude, userLongitude, 'N.Y.C')
+  //           params.city = 'nyc'
+  //         } else if (userLatitude <= 28 && userLatitude >= 23 && userLongitude <= 42 && userLongitude >= 38) {
+  //           console.log('Stored location coordinates: ', userLatitude, userLongitude, 'MIA')
+  //           params.city = 'mia'
+  //         } else if (userLatitude <= 36 && userLatitude >= 32 && userLongitude <= 42 && userLongitude >= 38) {
+  //           console.log('Stored location coordinates: ', userLatitude, userLongitude, 'L.A.')
+  //           params.city = 'la'
+  //         } else {
+  //           console.log('Stored location coordinates: ', userLatitude, userLongitude, 'DEFAULTED to NYC')
+  //           params.city = 'nyc'
+  //         }
+  //         // Save to params
+  //         setSearchParams(params)
+  //         console.log('Params (after *city* (geo) changed): ', searchParams)
+  //       } catch (e) {
+  //         console.log('ERROR', e.message)
+  //       }
+  //     }
+  //     assignLocation()
+  //   } else {
+  //     /* geolocation IS NOT available */
+  //     console.log('🌍❌ geolocation NOT found ...')
+  //   }
+  // }
 
   // * TEMPLATE
   return (
