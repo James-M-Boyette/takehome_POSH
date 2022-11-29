@@ -3,7 +3,7 @@ import {useNavigate, useSearchParams} from 'react-router-dom'
 
 import {PoshEventObject} from 'interface/poshEventObject'
 
-// components
+// Components
 import EventDetails from '../../components/Show Events/EventDetails'
 
 type PoshEventsArray = Array<PoshEventObject>
@@ -46,175 +46,9 @@ const ExploreEvents = () => {
   }
 
   // * ** PARAMS **
-  // Params Hook + Store Params
+  // Params Hook + Param Update Logic
   const [searchParams, setSearchParams] = useSearchParams()
   const newParams = new URLSearchParams(searchParams.toString()) // Holds changes to be saved to `searchParams` stateful variable
-
-  // * ** EVENTS **
-  // Current "Events" Data
-  const [poshEvents, setPoshEvents] = useState<PoshEventObject[]>([])
-
-  // Elemental "fetch" function
-  const fetchPoshEvents = async () => {
-    const response = await fetch('http://localhost:4042/api/events')
-    console.log('🐕 Fetch Finished!')
-
-    // Parse the JSON into an array of PoshEvent objects
-    const json: PoshEventsArray = await response.json()
-
-    if (response.ok) {
-      // Tranisition from 'Loading' screen to filtered events via stateful variable
-      setLoading(false)
-      console.log('PARAMS city :', newParams.get('city'))
-      console.log('PARAMS time :', newParams.get('t'))
-
-      // setPoshEvents(json)
-      performFiltering(json)
-      // return json
-    } else {
-      console.log('🚨 Something went wrong with data fetch ...')
-    }
-  }
-
-  // Fetch events the first time the page is loaded
-  useEffect(() => {
-    // * Demo Workaround: assign city based on proximity
-    newParams.get('city') == 'near' ? setGeoLocation() : ''
-
-    fetchPoshEvents()
-    // const json = fetchPoshEvents()
-    // performFiltering(json)
-    // performFiltering()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Re-Fetch on params change
-  // useEffect(() => {
-  //   fetchPoshEvents()
-  // }, [searchParams])
-
-  const performFiltering = (json: PoshEventsArray) => {
-    const filteredEventsByCity = filterByCity(json)
-    const filteredResults = filterByTime(filteredEventsByCity)
-    filteredResults ? setPoshEvents(filteredResults) : console.log('problem filtering')
-  }
-
-  useEffect(() => {}, [poshEvents])
-
-  // Filter By City
-  const filterByCity = (json: PoshEventsArray) => {
-    // const filterByCity = () => {
-    // Using current 'city' param, Get the the lat & long of said city (stored in our 'cities' hashmap)
-    const cityLongLat = cities[newParams.get('city') as CitiesKey]
-    console.log('cityLongLat: ', cityLongLat)
-    // Filter json response by matching lat & long as new Event array
-    // const filteredEventsByCity = poshEvents.filter(el => {
-    const filteredEventsByCity = json.filter(el => {
-      return el.location.coordinates[0] == cityLongLat.long && el.location.coordinates[1] == cityLongLat.lat
-    })
-    // Store filtered events (to be itterated-through using eventDetails component)
-    console.log('filteredEventsByCity: ', filteredEventsByCity)
-    // setPoshEvents(filteredEventsByCity)
-    return filteredEventsByCity
-  }
-
-  // Filter by Time-Range Selection
-  // const filterByTime = (json: PoshEventsArray) => {
-  // const filterByTime = () => {
-  const filterByTime = (filteredByCity: PoshEventsArray) => {
-    // console.log('Initial poshEvents Array: ', poshEvents)
-    // Get User's desired timeframe from params
-    const timeframe = newParams.get('t')
-    console.log('Timeframe: ', timeframe)
-
-    // Get Users's Current Date
-    // const today = new Date().toLocaleDateString('en-US')
-    // const today = new Date()
-
-    // * Users's Hard-Coded Date (** for testing **)
-    const today = new Date('11/27/2022')
-    // const today: string = '11/28/2022'
-    console.log("Today's date: ", today)
-
-    // Filter json response by matching day(s)
-    // ? Should this be moved to 'setTimeRange'?
-    if (timeframe == 'today') {
-      console.log('TODAY !')
-      // const filteredEvents = json.filter(el => {
-      const filteredEventsByDay = filteredByCity.filter(el => {
-        console.log('(Today) EVENT date: ', new Date(el.startUtc).toLocaleDateString('en-US'))
-        console.log(
-          'EVENT Match? ',
-          new Date(el.startUtc).toLocaleDateString('en-US') == today.toLocaleDateString('en-US'),
-        )
-        return new Date(el.startUtc).toLocaleDateString('en-US') == today.toLocaleDateString('en-US')
-      })
-      console.log('filteredEventsByDay: ', filteredEventsByDay)
-      return filteredEventsByDay
-    }
-
-    if (timeframe == 'week') {
-      console.log('WEEK !')
-
-      const filteredEventsByWeek = filteredByCity.filter(el => {
-        console.log('(Week) EVENT date: ', el.startUtc)
-
-        // Store a theoretical Event date
-        const eventDate = new Date(el.startUtc) // replace me with 'el'
-        // const eventDate = new Date() // replace me with 'el'
-        // eventDate.setDate(eventDate.getDate() + 3)
-        console.log('eventDate: ', eventDate)
-
-        // Determine how many days are between the two dates by subtracting "today" from "later" and converting milliseconds to days
-        const timeFromNow = (+eventDate - +today) / (1000 * 3600 * 24)
-
-        // Is the "eventDate" less than 7 days away?
-        console.log('timeFromNow: ', timeFromNow) // true
-        console.log(timeFromNow > 0 && timeFromNow < 7) // true
-
-        // return el.location.coordinates[0] == cityLongLat.long && el.location.coordinates[1] == cityLongLat.lat
-        // return new Date(el.startUtc).toLocaleDateString('en-US') == today
-        // TODO Sort by day and display "soonest to latest"
-        return timeFromNow > 0 && timeFromNow < 7
-      })
-      console.log('filteredEventsByWeek: ', filteredEventsByWeek)
-
-      const eventsSorted = filteredEventsByWeek.sort((a, b) => {
-        return +new Date(a.startUtc) - +new Date(b.startUtc)
-      })
-      console.log('SORTED: ', eventsSorted)
-      // // Store filtered events (to be itterated-through using eventDetails component)
-      // setPoshEvents(filteredEventsByWeek)
-      // return filteredEventsByWeek
-      return eventsSorted
-    }
-
-    if (timeframe == 'thanksgiving') {
-      console.log('🦃 Thanksgiving 🦃 !')
-      console.log(new Date('11/24/2022'))
-      const thanksgiving = new Date('11/24/2022')
-      // const filteredEvents = json.filter(el => {
-      const filteredEventsByHoliday = filteredByCity.filter(el => {
-        console.log('(Today) EVENT date: ', new Date(el.startUtc).toLocaleDateString('en-US'))
-        console.log(
-          'EVENT Match? ',
-          new Date(el.startUtc).toLocaleDateString('en-US') == thanksgiving.toLocaleDateString('en-US'),
-        )
-        return new Date(el.startUtc).toLocaleDateString('en-US') == thanksgiving.toLocaleDateString('en-US')
-      })
-      console.log('filteredEventsByHoliday: ', filteredEventsByHoliday)
-      // Store filtered events (to be itterated-through using eventDetails component)
-      return filteredEventsByHoliday
-    }
-  }
-
-  const handleTimeChange = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, id: string) => {
-    // Re-Style Buttons
-    updateButton(e)
-    // Update Params
-    setTimeRange(id)
-    // Re-Fetch Events (& filter based on new params)
-    fetchPoshEvents()
-  }
 
   // Determin User's Time-Range + store in params
   const setTimeRange = (id: string) => {
@@ -225,7 +59,6 @@ const ExploreEvents = () => {
 
     // Save to params
     setSearchParams(newParams.toString())
-    console.log('Params (after *TIME* changed): ', newParams)
   }
 
   // Resolve User's GeoLocation as a city + store in params
@@ -245,21 +78,16 @@ const ExploreEvents = () => {
           const userLongitude = location.coords.longitude
           // Assign City
           if (userLatitude <= 42 && userLatitude >= 38 && userLongitude <= 42 && userLongitude >= 38) {
-            console.log('Stored location coordinates: ', userLatitude, userLongitude, 'N.Y.C')
             newParams.set('city', 'nyc')
           } else if (userLatitude <= 28 && userLatitude >= 23 && userLongitude <= 42 && userLongitude >= 38) {
-            console.log('Stored location coordinates: ', userLatitude, userLongitude, 'MIA')
             newParams.set('city', 'mia')
           } else if (userLatitude <= 36 && userLatitude >= 32 && userLongitude <= 42 && userLongitude >= 38) {
-            console.log('Stored location coordinates: ', userLatitude, userLongitude, 'L.A.')
             newParams.set('city', 'la')
           } else {
-            console.log('Stored location coordinates: ', userLatitude, userLongitude, 'DEFAULTED to NYC')
             newParams.set('city', 'nyc')
           }
           // Save to params
           setSearchParams(newParams.toString())
-          console.log('Params (after *city* (geo) changed): ', searchParams)
         } catch (e) {
           console.log('ERROR', e.message)
         }
@@ -269,6 +97,111 @@ const ExploreEvents = () => {
       /* geolocation IS NOT available */
       console.log('🌍❌ geolocation NOT found ...')
     }
+  }
+
+  // * ** EVENTS **
+  // Current "Events" Data
+  const [poshEvents, setPoshEvents] = useState<PoshEventObject[]>([])
+
+  // Elemental "Fetch" Function
+  const fetchPoshEvents = async () => {
+    const response = await fetch('http://localhost:4042/api/events')
+    console.log('🐕 Fetch Finished!')
+
+    // Parse the JSON into an array of PoshEvent objects
+    const json: PoshEventsArray = await response.json()
+
+    if (response.ok) {
+      // Tranisition from 'Loading' screen to filtered events via stateful variable
+      setLoading(false)
+
+      performFiltering(json)
+    } else {
+      console.log('🚨 Something went wrong while fetching data ...')
+    }
+  }
+
+  // Fetch Events on Page Load
+  useEffect(() => {
+    // * Demo-specific use-case: assign city based on proximity
+    newParams.get('city') == 'near' ? setGeoLocation() : ''
+
+    fetchPoshEvents()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const performFiltering = (json: PoshEventsArray) => {
+    const filteredEventsByCity = filterByCity(json)
+    const filteredResults = filterByTime(filteredEventsByCity)
+    filteredResults ? setPoshEvents(filteredResults) : console.log('problem filtering')
+  }
+
+  // Filter By City
+  const filterByCity = (json: PoshEventsArray) => {
+    // Using current 'city' param, Get the the lat & long of said city (stored in our 'cities' hashmap)
+    const cityLongLat = cities[newParams.get('city') as CitiesKey]
+    // Filter json response by matching lat & long as new Event array
+    const filteredEventsByCity = json.filter(el => {
+      return el.location.coordinates[0] == cityLongLat.long && el.location.coordinates[1] == cityLongLat.lat
+    })
+    // Store filtered events (to be itterated-through using eventDetails component)
+    return filteredEventsByCity
+  }
+
+  // Filter by Time-Range Selection
+  const filterByTime = (filteredByCity: PoshEventsArray) => {
+    // Get User's desired timeframe from params
+    const timeframe = newParams.get('t')
+
+    // Get Users's Current Date
+    // const today = new Date()
+    // * A User Hard-Coded Date (** Use for additional testing **)
+    const today = new Date('11/27/2022')
+
+    // Filter JSON Response by Matching Day(s)
+    // ? Should this be moved to 'setTimeRange'?
+    // "TODAY"
+    if (timeframe == 'today') {
+      const filteredEventsByDay = filteredByCity.filter(el => {
+        return new Date(el.startUtc).toLocaleDateString('en-US') == today.toLocaleDateString('en-US')
+      })
+
+      return filteredEventsByDay
+    }
+    // "THIS WEEK"
+    if (timeframe == 'week') {
+      const filteredEventsByWeek = filteredByCity.filter(el => {
+        const eventDate = new Date(el.startUtc)
+
+        // How many days from today is the given event?
+        const timeFromNow = (+eventDate - +today) / (1000 * 3600 * 24)
+
+        // If less than 7 days (but greater than 0), show that event
+        return timeFromNow >= 0 && timeFromNow <= 7
+      })
+
+      const eventsSorted = filteredEventsByWeek.sort((a, b) => {
+        return +new Date(a.startUtc) - +new Date(b.startUtc)
+      })
+
+      return eventsSorted
+    }
+    // "THANKSGIVING"
+    if (timeframe == 'thanksgiving') {
+      const thanksgiving = new Date('11/24/2022')
+      const filteredEventsByHoliday = filteredByCity.filter(el => {
+        return new Date(el.startUtc).toLocaleDateString('en-US') == thanksgiving.toLocaleDateString('en-US')
+      })
+      return filteredEventsByHoliday
+    }
+  }
+
+  const handleTimeChange = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, id: string) => {
+    // Re-Style Buttons
+    updateButton(e)
+    // Update Params
+    setTimeRange(id)
+    // Re-Fetch Events (& filter based on new params)
+    fetchPoshEvents()
   }
 
   // * TEMPLATE
